@@ -1,75 +1,109 @@
-class RomanNumeralsConverter {
-    I = 1
-    III = 3
-    V = 5
-    X = 10
+const I = 1
+const III = 3
+const V = 5
+const X = 10
 
-    romans = new Map([
-        [this.I, 'I'],
-        [this.V, 'V'],
-        [this.X, 'X'],
+module RomanNumeralsConverter {
+    const romans = new Map([
+        [I, 'I'],
+        [V, 'V'],
+        [X, 'X'],
     ])
 
-    public toRoman(decimalNumber: number): string {
+    class Symbol {
+        decimalValue: number
+        countFunction: (decimalNumber: number) => number
+
+        constructor(decimalValue: number, countFunction: (decimalNumber: number) => number) {
+            this.decimalValue = decimalValue
+            this.countFunction = countFunction
+        }
+    }
+
+    export function toRoman(decimalNumber: number): string {
         let roman = ''
 
-        // TODO: remove redundance below
-        const numberOfI = this.getNumberOfI(decimalNumber)
-        const symbolForI = this.toRomanSymbol(this.I)
-        roman = this.prependNumeral(symbolForI, numberOfI, roman)
+        const numberOfI = getNumberOfI(decimalNumber)
+        roman = prependSymbols(I, numberOfI, roman)
 
-        const numberOfV = this.getNumberOfV(decimalNumber)
-        const symbolForV = this.toRomanSymbol(this.V)
-        roman = this.prependNumeral(symbolForV, numberOfV, roman)
+        const symbols: Array<Symbol> = [
+            new Symbol(V, getNumberOfV),
+            new Symbol(X, getNumberOfX)
+        ]
 
-        const numberOfX = this.getNumberOfX(decimalNumber)
-        const symbolForX = this.toRomanSymbol(this.X)
-        roman = this.prependNumeral(symbolForX, numberOfX, roman)
+        symbols.forEach((symbol) => {
+            const romanPartOfSymbol = getRomanPartForSymbol(symbol, decimalNumber)
+
+            roman = prependChar(romanPartOfSymbol, roman)
+        })
 
         return roman
     }
 
-    private toRomanSymbol(decimal: number): string {
-        const numeral = this.romans.get(decimal)
+    function getRomanPartForSymbol(symbol: Symbol, decimalNumber: number) {
+        let romanPartOfSymbol = ''
+        if (shouldBePrefixed(decimalNumber, symbol.decimalValue)) {
+            romanPartOfSymbol = prependSymbol(symbol.decimalValue, romanPartOfSymbol)
+            romanPartOfSymbol = prependSymbol(I, romanPartOfSymbol)
+        }
+
+        const symbolCount = symbol.countFunction(decimalNumber)
+        romanPartOfSymbol = prependSymbols(symbol.decimalValue, symbolCount, romanPartOfSymbol)
+
+        return romanPartOfSymbol
+    }
+
+    function shouldBePrefixed(decimalNumber: number, numeralValue: number) {
+        return decimalNumber % X === numeralValue - I
+    }
+
+    function toRomanSymbol(decimal: number): string {
+        const numeral = romans.get(decimal)
 
         if (numeral === undefined) return ''
 
         return numeral
     }
 
-    private prependNumeral(numeral: string, times: number, roman: string) {
+    function prependSymbol(symbolDecimalValue: number, roman: string) {
+        const romanSymbol = toRomanSymbol(symbolDecimalValue)
+
+        return prependChar(romanSymbol, roman)
+    }
+
+    function prependSymbols(symbolDecimalValue: number, times: number, roman: string) {
         for (let n = 0; n < times; n++) {
-            roman = this.prependChar(numeral, roman)
+            roman = prependSymbol(symbolDecimalValue, roman)
         }
 
         return roman
     }
 
-    private prependChar(char: string, input: string) {
+    function prependChar(char: string, input: string) {
         return `${char}${input}`
     }
 
-    private getNumberOfI(decimal: number) {
-        const remainingAfterV = decimal % this.V
+    function getNumberOfI(decimal: number) {
+        const remainingAfterV = decimal % V
 
-        if (remainingAfterV <= this.III) return remainingAfterV
+        if (remainingAfterV <= III) return remainingAfterV
 
         return 0
     }
 
-    private getNumberOfV(decimal: number) {
-        const remaningAfterX = decimal % this.X
+    function getNumberOfV(decimal: number): number {
+        const remainingAfterX = decimal % X
 
-        return remaningAfterX >= this.V ? 1 : 0
+        return remainingAfterX >= V && remainingAfterX < X - 1 ? 1 : 0
     }
 
-    private getNumberOfX(decimal: number) {
-        return this.integerDivide(decimal, this.X)
+    function getNumberOfX(decimal: number): number {
+        return integerDivide(decimal, X)
     }
 
-    private integerDivide(decimal: number, divider: number) {
+    function integerDivide(decimal: number, divider: number) {
         return Math.floor(decimal / divider)
     }
 }
 
-export default RomanNumeralsConverter
+export default RomanNumeralsConverter.toRoman

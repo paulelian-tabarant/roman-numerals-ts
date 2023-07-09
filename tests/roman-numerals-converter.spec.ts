@@ -1,6 +1,4 @@
-import RomanNumeralsConverter from "../src/roman-numerals-converter"
-
-let converter = new RomanNumeralsConverter()
+import toRoman from "../src/roman-numerals-converter"
 
 class TestCase {
     decimal: number
@@ -20,7 +18,7 @@ describe('roman numerals converter', () => {
 
     it('should return an empty string', () => {
         // WHEN THEN
-        expect(converter.toRoman(0)).toBe('')
+        expect(toRoman(0)).toBe('')
     })
 
     it('should append I, II or III when appropriate', () => {
@@ -33,7 +31,7 @@ describe('roman numerals converter', () => {
 
         testCases.forEach(testCase => {
             // WHEN
-            const actualRoman = converter.toRoman(testCase.decimal)
+            const actualRoman = toRoman(testCase.decimal)
 
             // THEN
             expect(actualRoman).toBe(testCase.roman)
@@ -53,7 +51,7 @@ describe('roman numerals converter', () => {
 
         testCases.forEach(testCase => {
             // WHEN
-            const actualRoman = converter.toRoman(testCase.decimal)
+            const actualRoman = toRoman(testCase.decimal)
 
             // THEN
             expect(actualRoman).toBe(testCase.roman)
@@ -78,7 +76,25 @@ describe('roman numerals converter', () => {
 
         testCases.forEach(testCase => {
             // WHEN
-            const actualRoman = converter.toRoman(testCase.decimal)
+            const actualRoman = toRoman(testCase.decimal)
+
+            // THEN
+            expect(actualRoman).toBe(testCase.roman)
+        })
+    })
+
+    it('should prefix with I when number ends with 4 or 9', () => {
+        // GIVEN
+        let testCases: Array<TestCase> = [
+            assert(4, 'IV'),
+            assert(9, 'IX'),
+            assert(29, 'XXIX'),
+            assert(34, 'XXXIV'),
+        ]
+
+        testCases.forEach(testCase => {
+            // WHEN
+            const actualRoman = toRoman(testCase.decimal)
 
             // THEN
             expect(actualRoman).toBe(testCase.roman)
