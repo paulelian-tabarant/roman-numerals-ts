@@ -12,60 +12,76 @@ class TestCase {
     }
 }
 
-const toTestCase = (decimal: number, roman: string): TestCase => {
+const assert = (decimal: number, roman: string): TestCase => {
     return new TestCase(decimal, roman)
 }
 
 describe('roman numerals converter', () => {
 
     it('should return an empty string', () => {
+        // WHEN THEN
         expect(converter.toRoman(0)).toBe('')
     })
 
     it('should append I, II or III when appropriate', () => {
+        // GIVEN
         let testCases: Array<TestCase> = [
-            toTestCase(1, 'I'),
-            toTestCase(2, 'II'),
-            toTestCase(3, 'III'),
+            assert(1, 'I'),
+            assert(2, 'II'),
+            assert(3, 'III'),
         ]
 
         testCases.forEach(testCase => {
-            expect(converter.toRoman(testCase.decimal)).toBe(testCase.roman)
+            // WHEN
+            const actualRoman = converter.toRoman(testCase.decimal)
+
+            // THEN
+            expect(actualRoman).toBe(testCase.roman)
         })
     })
 
     it('should return X, XV, XX, XXV, XXX, XXXV when appropriate', () => {
+        // GIVEN
         let testCases: Array<TestCase> = [
-            toTestCase(10, 'X'),
-            toTestCase(15, 'XV'),
-            toTestCase(20, 'XX'),
-            toTestCase(25, 'XXV'),
-            toTestCase(30, 'XXX'),
-            toTestCase(35, 'XXXV'),
+            assert(10, 'X'),
+            assert(15, 'XV'),
+            assert(20, 'XX'),
+            assert(25, 'XXV'),
+            assert(30, 'XXX'),
+            assert(35, 'XXXV'),
         ]
 
         testCases.forEach(testCase => {
-            expect(converter.toRoman(testCase.decimal)).toBe(testCase.roman)
+            // WHEN
+            const actualRoman = converter.toRoman(testCase.decimal)
+
+            // THEN
+            expect(actualRoman).toBe(testCase.roman)
         })
     })
 
     it('should combine I, II, III with prefixes when necessary', () => {
+        // GIVEN
         let testCases: Array<TestCase> = [
-            toTestCase(6, 'VI'),
-            toTestCase(7, 'VII'),
-            toTestCase(8, 'VIII'),
-            toTestCase(11, 'XI'),
-            toTestCase(12, 'XII'),
-            toTestCase(13, 'XIII'),
-            toTestCase(16, 'XVI'),
-            toTestCase(17, 'XVII'),
-            toTestCase(18, 'XVIII'),
-            toTestCase(32, 'XXXII'),
-            toTestCase(27, 'XXVII'),
+            assert(6, 'VI'),
+            assert(7, 'VII'),
+            assert(8, 'VIII'),
+            assert(11, 'XI'),
+            assert(12, 'XII'),
+            assert(13, 'XIII'),
+            assert(16, 'XVI'),
+            assert(17, 'XVII'),
+            assert(18, 'XVIII'),
+            assert(32, 'XXXII'),
+            assert(27, 'XXVII'),
         ]
 
         testCases.forEach(testCase => {
-            expect(converter.toRoman(testCase.decimal)).toBe(testCase.roman)
+            // WHEN
+            const actualRoman = converter.toRoman(testCase.decimal)
+
+            // THEN
+            expect(actualRoman).toBe(testCase.roman)
         })
     })
 })

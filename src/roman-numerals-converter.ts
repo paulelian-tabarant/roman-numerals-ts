@@ -10,7 +10,7 @@ class RomanNumeralsConverter {
         [this.X, 'X'],
     ])
 
-    toRoman(decimalNumber: number): string {
+    public toRoman(decimalNumber: number): string {
         let roman = ''
 
         // TODO: remove redundance below
