@@ -100,4 +100,39 @@ describe('roman numerals converter', () => {
             expect(actualRoman).toBe(testCase.roman)
         })
     })
+
+
+    it('should output L appended with remaining value', () => {
+        // GIVEN
+        let testCases: Array<TestCase> = [
+            assert(50, 'L'),
+            assert(54, 'LIV'),
+            assert(73, 'LXXIII'),
+        ]
+
+        testCases.forEach(testCase => {
+            // WHEN
+            const actualRoman = toRoman(testCase.decimal)
+
+            // THEN
+            expect(actualRoman).toBe(testCase.roman)
+        })
+    })
+
+    it('should output XL when number is forty-something', () => {
+        // GIVEN
+        let testCases: Array<TestCase> = [
+            assert(40, 'XL'),
+            assert(44, 'XLIV'),
+            assert(49, 'XLIX'),
+        ]
+
+        testCases.forEach(testCase => {
+            // WHEN
+            const actualRoman = toRoman(testCase.decimal)
+
+            // THEN
+            expect(actualRoman).toBe(testCase.roman)
+        })
+    })
 })

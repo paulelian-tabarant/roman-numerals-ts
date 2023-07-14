@@ -1,13 +1,15 @@
-const I = 1
-const III = 3
-const V = 5
-const X = 10
-
 module RomanNumeralsConverter {
+    const I = 1
+    const III = 3
+    const V = 5
+    const X = 10
+    const L = 50
+
     const romans = new Map([
         [I, 'I'],
         [V, 'V'],
         [X, 'X'],
+        [L, 'L'],
     ])
 
     class Symbol {
@@ -20,19 +22,22 @@ module RomanNumeralsConverter {
         }
     }
 
+
     export function toRoman(decimalNumber: number): string {
         let roman = ''
 
         const numberOfI = getNumberOfI(decimalNumber)
         roman = prependSymbols(I, numberOfI, roman)
 
+
         const symbols: Array<Symbol> = [
             new Symbol(V, getNumberOfV),
-            new Symbol(X, getNumberOfX)
+            new Symbol(X, getNumberOfX),
+            new Symbol(L, getNumberOfL)
         ]
 
         symbols.forEach((symbol) => {
-            const romanPartOfSymbol = getRomanPartForSymbol(symbol, decimalNumber)
+            const romanPartOfSymbol = getRomanPartWithSymbol(symbol, decimalNumber)
 
             roman = prependChar(romanPartOfSymbol, roman)
         })
@@ -40,17 +45,17 @@ module RomanNumeralsConverter {
         return roman
     }
 
-    function getRomanPartForSymbol(symbol: Symbol, decimalNumber: number) {
-        let romanPartOfSymbol = ''
+    function getRomanPartWithSymbol(symbol: Symbol, decimalNumber: number) {
+        let romanPartWithSymbol = ''
         if (shouldBePrefixed(decimalNumber, symbol.decimalValue)) {
-            romanPartOfSymbol = prependSymbol(symbol.decimalValue, romanPartOfSymbol)
-            romanPartOfSymbol = prependSymbol(I, romanPartOfSymbol)
+            romanPartWithSymbol = prependSymbol(symbol.decimalValue, romanPartWithSymbol)
+            romanPartWithSymbol = prependSymbol(I, romanPartWithSymbol)
         }
 
         const symbolCount = symbol.countFunction(decimalNumber)
-        romanPartOfSymbol = prependSymbols(symbol.decimalValue, symbolCount, romanPartOfSymbol)
+        romanPartWithSymbol = prependSymbols(symbol.decimalValue, symbolCount, romanPartWithSymbol)
 
-        return romanPartOfSymbol
+        return romanPartWithSymbol
     }
 
     function shouldBePrefixed(decimalNumber: number, numeralValue: number) {
@@ -94,11 +99,17 @@ module RomanNumeralsConverter {
     function getNumberOfV(decimal: number): number {
         const remainingAfterX = decimal % X
 
-        return remainingAfterX >= V && remainingAfterX < X - 1 ? 1 : 0
+        return remainingAfterX >= V && remainingAfterX < X - I ? 1 : 0
     }
 
     function getNumberOfX(decimal: number): number {
-        return integerDivide(decimal, X)
+        let valueOfSymbolsAfterX = decimal - getNumberOfL(decimal) * L 
+
+        return integerDivide(valueOfSymbolsAfterX, X)
+    }
+
+    function getNumberOfL(decimalNumber: number) {
+        return decimalNumber >= L ? 1 : 0
     }
 
     function integerDivide(decimal: number, divider: number) {
