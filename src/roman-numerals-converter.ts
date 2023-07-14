@@ -13,12 +13,12 @@ module RomanNumeralsConverter {
     ])
 
     class Symbol {
-        decimalValue: number
-        countFunction: (decimalNumber: number) => number
+        value: number
+        countInNumber: (decimalNumber: number) => number
 
         constructor(decimalValue: number, countFunction: (decimalNumber: number) => number) {
-            this.decimalValue = decimalValue
-            this.countFunction = countFunction
+            this.value = decimalValue
+            this.countInNumber = countFunction
         }
     }
 
@@ -47,19 +47,28 @@ module RomanNumeralsConverter {
 
     function getRomanPartWithSymbol(symbol: Symbol, decimalNumber: number) {
         let romanPartWithSymbol = ''
-        if (shouldBePrefixed(decimalNumber, symbol.decimalValue)) {
-            romanPartWithSymbol = prependSymbol(symbol.decimalValue, romanPartWithSymbol)
-            romanPartWithSymbol = prependSymbol(I, romanPartWithSymbol)
+        if (shouldBePrefixed(decimalNumber, symbol.value)) {
+            romanPartWithSymbol = prependSymbol(symbol.value, romanPartWithSymbol)
+            const symbolToPrepend = symbol.value < L ? I : X
+            romanPartWithSymbol = prependSymbol(symbolToPrepend, romanPartWithSymbol)
         }
 
-        const symbolCount = symbol.countFunction(decimalNumber)
-        romanPartWithSymbol = prependSymbols(symbol.decimalValue, symbolCount, romanPartWithSymbol)
+        const symbolCount = symbol.countInNumber(decimalNumber)
+        romanPartWithSymbol = prependSymbols(
+            symbol.value,
+            symbolCount,
+            romanPartWithSymbol
+        )
 
         return romanPartWithSymbol
     }
 
-    function shouldBePrefixed(decimalNumber: number, numeralValue: number) {
-        return decimalNumber % X === numeralValue - I
+    function shouldBePrefixed(decimalNumber: number, romanValue: number) {
+        if (romanValue === L) {
+            return decimalNumber - decimalNumber % X === L - X
+        }
+
+        return decimalNumber % X === romanValue - I
     }
 
     function toRomanSymbol(decimal: number): string {
@@ -103,9 +112,11 @@ module RomanNumeralsConverter {
     }
 
     function getNumberOfX(decimal: number): number {
-        let valueOfSymbolsAfterX = decimal - getNumberOfL(decimal) * L 
+        if (decimal % L < L - X) {
+            return integerDivide(decimal % L, X)
+        }
 
-        return integerDivide(valueOfSymbolsAfterX, X)
+        return 0
     }
 
     function getNumberOfL(decimalNumber: number) {
